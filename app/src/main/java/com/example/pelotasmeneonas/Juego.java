@@ -34,6 +34,7 @@ public class Juego implements Runnable, View.OnTouchListener {
     private int vidas;
     private boolean jugando = false;
     private boolean instrucciones;
+   private Pelota pelotamenu = new Pelota(400,400,200,800,(float) Math.PI/4,Color.GREEN,this);;
     public Juego() {
         paint = new Paint();
         paint.setColor(Color.WHITE);
@@ -44,6 +45,10 @@ public class Juego implements Runnable, View.OnTouchListener {
         px = Aleatorio.sgtef(0, width);
         vidas=(int) (NUMFIGURAS*0.1);
 
+
+    }
+    public void rjuego(){
+        jugando=false;
     }
     public void init(SurfaceHolder holder, int width, int height) {
         this.holder = holder;
@@ -59,10 +64,10 @@ public class Juego implements Runnable, View.OnTouchListener {
         textDificil = "Dificil";
         textInstrucciones = "Instrucciones";
 
-        rectFacil = new RectF(352, 500, 752, 700);
-        rectMedio = new RectF(352, 800, 752, 1000);
-        rectDificil = new RectF(352, 1100, 752, 1300);
-        rectInstrucciones = new RectF(252, 1500, 852, 1700);
+        rectFacil = new RectF(width/2f-200, height/1.5f-700, width/2f+200, height/1.5f-500);
+        rectMedio = new RectF(width/2f-200, height/1.5f-400, width/2f+200, height/1.5f-200);
+        rectDificil = new RectF(width/2f-200, height/1.5f-100, width/2f+200, height/1.5f+100);
+        rectInstrucciones = new RectF(width/2f-350, height/1.5f+200, width/2f+350, height/1.5f+400);
         gameLoop = new Thread(this);
         gameLoop.start();
     }
@@ -97,11 +102,11 @@ public class Juego implements Runnable, View.OnTouchListener {
             int rad = al / 3;
             int color = Color.rgb(Aleatorio.sgte(1, 256), Aleatorio.sgte(1, 256), Aleatorio.sgte(1, 256));
             if (pelotas.size()==NUMFIGURAS-1){
-                Pelota pel =new Pelota(x, y, rad, 9000 / rad, (float) Math.PI / 4, Color.WHITE, this);
+                Pelota pel =new Pelota(x, y, rad, 20000 / rad, (float) Math.PI / 4, Color.WHITE, this);
                 pel.setUltimo(true);
                 pelotas.add(pel);
             }else
-                pelotas.add(new Pelota(x, y, rad, 9000 / rad, (float) Math.PI / 4, color, this));
+                pelotas.add(new Pelota(x, y, rad, 20000 / rad, (float) Math.PI / 4, color, this));
 
         }
 
@@ -135,6 +140,7 @@ public class Juego implements Runnable, View.OnTouchListener {
     }
 
     private void siguiente(float lapso) {
+        pelotamenu.mover(lapso);
         pelotas.forEach(p -> p.mover(lapso));
         if (pelotaSeleccionada != null) {
             pelotas.remove(pelotaSeleccionada);
@@ -149,9 +155,12 @@ public class Juego implements Runnable, View.OnTouchListener {
             canvas.drawColor(Color.BLACK);
             canvas.save();
             paint.setColor(Color.WHITE);
-            paint.setTextSize(70);
-            canvas.drawText("Vidas: " + vidas, width / 2, 70, paint);
-            canvas.drawText("Restantes "+pelotas.size(),40,70,paint);
+            paint.setTextSize(height*width/40000);
+            paint.setStrokeWidth(8);
+            String vid = "Vidas: "+vidas;
+            String rest = "Restantes "+pelotas.size();
+            canvas.drawText(vid, width-paint.measureText(vid)-20 , 100, paint);
+            canvas.drawText(rest, 0,100,paint);
             paint.setStyle(Paint.Style.FILL);
             pelotas.forEach(p -> p.paint(canvas));
             canvas.restore();
@@ -160,20 +169,20 @@ public class Juego implements Runnable, View.OnTouchListener {
             canvas.drawColor(Color.BLACK);
             canvas.save();
             paint.setColor(Color.WHITE);
-            paint.setTextSize(40);
-            paint.setStrokeWidth(4);
+            paint.setTextSize(height*width/46000f);
+            paint.setStrokeWidth(2);
             String ins = "Toca la bola que se desplaza por encima de todas";
             String ins2 = "para eliminarla. Cada vez que falles se añadirá";
             String ins3 = "una bola más al juego.";
             String ins4 = "Perderás si el número de bolas añadidas supera";
             String ins5 = "el 10% de las iniciales. Elimínalas rapido.";
             String ins6 = "TOCA LA PANTALLA PARA RETORNAR";
-            canvas.drawText(ins, rectMedio.centerX() - paint.measureText(textMedio)-350 , rectMedio.centerY() + paint.getTextSize() / 3, paint);
-            canvas.drawText(ins2, rectMedio.centerX() - paint.measureText(textMedio) -310, (rectMedio.centerY() + paint.getTextSize() / 3)+50, paint);
-            canvas.drawText(ins3, rectMedio.centerX() + paint.measureText(textMedio) -350, (rectMedio.centerY() + paint.getTextSize() / 3)+100, paint);
-            canvas.drawText(ins4, rectMedio.centerX() - paint.measureText(textMedio) -330, (rectMedio.centerY() + paint.getTextSize() / 3)+150, paint);
-            canvas.drawText(ins5, rectMedio.centerX() - paint.measureText(textMedio) -260, (rectMedio.centerY() + paint.getTextSize() / 3)+200, paint);
-            canvas.drawText(ins6, rectMedio.centerX() - paint.measureText(textMedio) -250, (rectMedio.centerY() + paint.getTextSize() / 3)+500, paint);
+            canvas.drawText(ins, rectMedio.centerX() - paint.measureText(ins)/2, rectMedio.centerY() + paint.getTextSize() / 3, paint);
+            canvas.drawText(ins2, rectMedio.centerX() - paint.measureText(ins2)/2 , (rectMedio.centerY() + paint.getTextSize() / 3)+50, paint);
+            canvas.drawText(ins3, rectMedio.centerX() - paint.measureText(ins3)/2 , (rectMedio.centerY() + paint.getTextSize() / 3)+100, paint);
+            canvas.drawText(ins4, rectMedio.centerX() - paint.measureText(ins4)/2, (rectMedio.centerY() + paint.getTextSize() / 3)+200, paint);
+            canvas.drawText(ins5, rectMedio.centerX() - paint.measureText(ins5)/2, (rectMedio.centerY() + paint.getTextSize() / 3)+250, paint);
+            canvas.drawText(ins6, rectMedio.centerX() - paint.measureText(ins6)/2, (rectMedio.centerY() + paint.getTextSize() / 3)+500, paint);
 
             canvas.restore();
         } else if (perder) {
@@ -183,20 +192,14 @@ public class Juego implements Runnable, View.OnTouchListener {
             paint.setColor(Color.BLACK);
             paint.setStrokeWidth(15);
             String texto= "Perdiste";
-            float x=0;
-            float y= getHeight()/2;
-            canvas.drawText(texto,x,y,paint);
-            if (x<getWidth()){
-                x+=10;
-                pintar();
-            }else {
-                perder=false;
-                jugando=true;
-            }
+            paint.setTextSize(50);
+            canvas.drawText(texto, width/2-paint.measureText(texto)/2,height/2,paint);
         } else {
             paint.setAntiAlias(true);
             canvas.drawColor(Color.WHITE);
             canvas.save();
+            pelotamenu.paint(canvas);
+            paint.setStyle(Paint.Style.STROKE);
             paint.setColor(Color.BLACK);
             canvas.drawRoundRect(rectFacil, 50, 50, paint);
             canvas.drawRoundRect(rectMedio, 50, 50, paint);
@@ -204,8 +207,8 @@ public class Juego implements Runnable, View.OnTouchListener {
             canvas.drawRoundRect(rectInstrucciones, 50, 50, paint);
             paint.setTextSize(180);
             paint.setStrokeWidth(20);
-            canvas.drawText("PELOTAS",160,200,paint);
-            canvas.drawText("MENEONAS",60,400,paint);
+            canvas.drawText("PELOTAS",width/2f-350,height/3f-450,paint);
+            canvas.drawText("MENEONAS",width/2f-480,height/3f-250,paint);
             paint.setStrokeWidth(7);
             // Dibujar el texto dentro de los cuadros
             paint.setTextSize(80);
@@ -255,6 +258,11 @@ public class Juego implements Runnable, View.OnTouchListener {
                     pintar();
                     return true;
                 }
+            if (perder){
+                perder=false;
+                pintar();
+                return true;
+            }
              if(!instrucciones && !jugando){
 
                 if (rectFacil.contains(x, y)) {
@@ -298,9 +306,9 @@ public class Juego implements Runnable, View.OnTouchListener {
 
     private void reiniciar() {
         pelotas.clear();
-        crearPelotas();
+        jugando=false;
+        perder=true;
 
-        vidas= (int) (NUMFIGURAS*0.1);
 
     }
     private void eliminarPelota(int index) {

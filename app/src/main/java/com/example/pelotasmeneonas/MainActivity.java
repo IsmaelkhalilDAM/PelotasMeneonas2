@@ -45,7 +45,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
     }
-
+    public void onBackPressed(){
+        juego.rjuego();
+    }
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
 
