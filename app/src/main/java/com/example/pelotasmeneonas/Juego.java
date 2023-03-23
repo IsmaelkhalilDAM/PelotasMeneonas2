@@ -1,6 +1,9 @@
 package com.example.pelotasmeneonas;
 
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -34,8 +37,10 @@ public class Juego implements Runnable, View.OnTouchListener {
     private int vidas;
     private boolean jugando = false;
     private boolean instrucciones;
-   private Pelota pelotamenu = new Pelota(400,400,200,800,(float) Math.PI/4,Color.GREEN,this);;
-    public Juego() {
+
+    private Bitmap bitm;
+   private pelotaMenu pelotamenu = new pelotaMenu(100,100,10,800,(float) Math.PI/4,Color.GREEN,this);;
+    public Juego(Context c) {
         paint = new Paint();
         paint.setColor(Color.WHITE);
         paint.setTextSize(100);
@@ -44,7 +49,7 @@ public class Juego implements Runnable, View.OnTouchListener {
         angulo = Aleatorio.sgtef((float) -Math.PI, (float) Math.PI);
         px = Aleatorio.sgtef(0, width);
         vidas=(int) (NUMFIGURAS*0.1);
-
+        bitm=BitmapFactory.decodeResource(c.getResources(),R.drawable.pelotamenu);
 
     }
     public void rjuego(){
@@ -198,7 +203,7 @@ public class Juego implements Runnable, View.OnTouchListener {
             paint.setAntiAlias(true);
             canvas.drawColor(Color.WHITE);
             canvas.save();
-            pelotamenu.paint(canvas);
+            pelotamenu.paint(canvas,bitm);
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(Color.BLACK);
             canvas.drawRoundRect(rectFacil, 50, 50, paint);
@@ -311,6 +316,7 @@ public class Juego implements Runnable, View.OnTouchListener {
 
 
     }
+
     private void eliminarPelota(int index) {
         pelotas.remove(index);
         pelotas.get(pelotas.size()-1).setUltimo(true);

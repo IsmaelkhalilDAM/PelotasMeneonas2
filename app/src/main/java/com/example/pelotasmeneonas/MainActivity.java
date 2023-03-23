@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             });
         }
         surface = new SurfaceView(this);
-        juego = new Juego();
+        juego = new Juego(this);
         surface.getHolder().addCallback(this);
         setContentView(surface);
         surface.setOnTouchListener(juego);
